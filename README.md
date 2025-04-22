@@ -90,6 +90,8 @@ TEST_CASE("mult/div float L1") {
 Examples are available in `src/test/`. At the moment, we only provide a GNU-`M̀akefile` for Linux
 systems.
 
+![example_violin](doc/example_L1.png)
+
 ## Licence
 
 This toolbox is licensed under the MIT License. See the LICENSE file for details.

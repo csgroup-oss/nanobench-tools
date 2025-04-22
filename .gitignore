@@ -35,3 +35,5 @@
 .*.sw*
 .vscode
 
+# Binaries
+src/test/example_violin
