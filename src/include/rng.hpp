@@ -1,6 +1,6 @@
 // Random range objects.
 //
-// Code inspired by Chandler Carruth's presentation ar CppCon17:
+// Code inspired by Chandler Carruth's presentation at CppCon17:
 // "Going Nowhere Faster"
 // Written from scratch by Luc Hermitte
 // ======================================================================
