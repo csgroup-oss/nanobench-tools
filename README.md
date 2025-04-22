@@ -1,6 +1,7 @@
 # Nanobench toolbox
 
-We provide in this repository complementary tools for [nanobench](https://nanobench.ankerl.com/).
+We provide in this repository complementary tools for [nanobench](https://nanobench.ankerl.com/)
+micro-benchmarks.
 
 ## Installation
 
@@ -8,7 +9,7 @@ This toolbox is header only. You just need to drop the `*.hpp` files somewhere s
 compilation chain. You can:
 
 - register the `include/` directory through `include_directories()` with CMake, or in your `$CPATH`
-  directory,
+  directory list,
 - or add it explicitly in the `$CXXFLAGS`/compilation line with `-I/path/to/the/include`.
 
 Note: it depends on:
@@ -24,7 +25,7 @@ Note: it depends on:
 `nanobench_html_graph_renderer.hpp` defines `HtmlGraphRenderer` class.
 
 This class helps produces an HTML file that draws
-[Box plots](https://plotly.com/javascript/box-plots/) or
+[box plots](https://plotly.com/javascript/box-plots/) or
 [violin plots](https://plotly.com/javascript/violin/) thanks to plotly JavaScript API.
 
 It's very similar to what `ankerl::nanobench::templates::htmlBoxplot()` returns.
@@ -35,8 +36,8 @@ The differences are:
 - We can choose to display plot legends on the side. This permits to interactively select which plot
   we want to display.
 - On top of _box plots_, _violin plots_ are also supported. Even when generating violin plots, the
-  associated box plot, median, and mean will also be displayed to help detect quartiles, median…
-  visually.
+  associated box plot, median, and mean will also be displayed to help visually detect quartiles,
+  median…
 - Spacing between plots have been reduced.
 - The name of each plot will also include the
   [Median Absolute Percentage Error](https://en.wikipedia.org/wiki/Mean_absolute_percentage_error)
@@ -84,9 +85,9 @@ TEST_CASE("mult/div float L1") {
 - `RNG<T>(first, last, N)` builds an iterable range of N random numbers of type `T`, uniformly
   distributed, between `first` and `last` values.
 
-## Tests
+## Examples
 
-Tests are available in `src/test/`. At the moment, we only provide a GNU-`M̀akefile` for Linux
+Examples are available in `src/test/`. At the moment, we only provide a GNU-`M̀akefile` for Linux
 systems.
 
 ## Licence
@@ -95,7 +96,8 @@ This toolbox is licensed under the MIT License. See the LICENSE file for details
 
 ## To-do
 
-This is a first draft of the toolbox. Many improvements are possible.
+The state of the toolbox is halfway between a gist/snippet and a real project.
+Many improvements are possible.
 
 - Contribute a way to correctly inject new options and expand
   [doctest](https://github.com/doctest/doctest) context object.
