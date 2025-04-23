@@ -18,3 +18,7 @@ cpp_begin_end_style: 'c++98'
 
 [*.md]
 max_line_length = 100
+
+[M̀akefile]
+indent_style = tab
+indent_size = 8

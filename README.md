@@ -75,6 +75,8 @@ TEST_CASE("mult/div float L1") {
 }
 ```
 
+Configuration options are available through the `NANOBENCH_VIOLIN_OPTIONS` macro.
+
 ### Range iterable random sequence
 
 `rng.hpp` defines `RNG` class which can be seen as a simplified (and specialized) version of

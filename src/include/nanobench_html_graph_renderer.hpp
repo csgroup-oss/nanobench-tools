@@ -44,6 +44,7 @@
 #include <cassert>
 #include <fstream>
 #include <stdexcept>
+#include <string>
 
 /** Helper class that builds an HTML graph rendered for the
  * microbenchmarks.
@@ -87,12 +88,105 @@ public:
      * @throw None
      * @post The output file isn't yet opened.
      */
-    explicit HtmlGraphRenderer(std::string plot_type, bool showlegend = false)
+    explicit HtmlGraphRenderer(std::string plot_type)
     : m_plot_type(std::move(plot_type))
-    , m_showlegend(showlegend ? "true" : "false")
     {
         assert(!m_file.is_open());
     }
+
+    HtmlGraphRenderer(HtmlGraphRenderer const&) = delete;
+    HtmlGraphRenderer(HtmlGraphRenderer     &&) = default;
+    HtmlGraphRenderer& operator=(HtmlGraphRenderer const&) = delete;
+    HtmlGraphRenderer& operator=(HtmlGraphRenderer     &&) = default;
+
+#if defined(__cpp_explicit_this_parameter)
+    // requires C++23, and g++14 or clang++20 (even if it should work with clang++18)
+    /**
+     * Tells to display plot legend.
+     * Setter meant to be used from _builder pattern_.
+     * It works on lvalue and rvalue instances of `HtmlGraphRenderer`
+     * @param[in] do_show  Shall we display the legend?
+     * @return this
+     * @see https://plotly.com/javascript/legend/
+     */
+    template <typename Self>
+    Self&& showlegend(this Self&& self, bool do_show)
+    {
+        self.m_show_legend = do_show ? "true" : "false";
+        return std::forward<Self>(self);
+    }
+
+    /**
+     * Tells to display the actual number of epochs in plot titles.
+     *
+     * Setter meant to be used from _builder pattern_.
+     * It works on lvalue and rvalue instances of `HtmlGraphRenderer`.
+     * @param[in] do_show  Shall we report the number of epochs?
+     * @return this
+     * @see nanobench definition of epoch
+     * https://nanobench.ankerl.com/reference.html#_CPPv4N6ankerl9nanobench5Bench6epochsE6size_t
+     */
+    template <typename Self>
+    Self&& showepochs(this Self&& self, bool do_show)
+    {
+        self.m_show_epochs  = do_show ? "; epochs: {{epochs}}" : "";
+        return std::forward<Self>(self);
+    }
+
+    /**
+     * Sets the rangemode option to use.
+     *
+     * Setter meant to be used from _builder pattern_.
+     * It works on lvalue and rvalue instances of `HtmlGraphRenderer`.
+     * @param[in] mode Range mode name to use.
+     *                 If empty, the option in not set in the plot.
+     *                 Set to "tozero" by default.
+     * @return this
+     * @see https://plotly.com/javascript/reference/layout/yaxis/#layout-yaxis-rangemode
+     */
+    template <typename Self>
+    Self&& rangemode(this Self&& self, std::string const& mode)
+    {
+        self.m_range_mode = !empty(mode) ? ", rangemode: '" + mode + "'" : "";
+        return std::forward<Self>(self);
+    }
+
+#else
+    // Same setters, but overloaded for lvalues and rvalues, before C++23 "explicit this parameter"
+    // feature.
+    HtmlGraphRenderer&& showlegend(bool do_show) &&
+    {
+        m_show_legend = do_show ? "true" : "false";
+        return std::move(*this);
+    }
+    HtmlGraphRenderer& showlegend(bool do_show) &
+    {
+        m_show_legend = do_show ? "true" : "false";
+        return *this;
+    }
+
+    HtmlGraphRenderer&& showepochs(bool do_show) &&
+    {
+        m_show_epochs  = do_show ? "; epochs: {{epochs}}" : "";
+        return std::move(*this);
+    }
+    HtmlGraphRenderer& showepochs(bool do_show) &
+    {
+        m_show_epochs  = do_show ? "; epochs: {{epochs}}" : "";
+        return *this;
+    }
+
+    HtmlGraphRenderer&& rangemode(std::string const& mode) &&
+    {
+        m_range_mode = !empty(mode) ? ", rangemode: '" + mode + "'" : "";
+        return std::move(*this);
+    }
+    HtmlGraphRenderer& rangemode(std::string const& mode) &
+    {
+        m_range_mode = !empty(mode) ? ", rangemode: '" + mode + "'" : "";
+        return *this;
+    }
+#endif
 
     /**
      * Opens the output HTML file and starts filling it.
@@ -144,10 +238,18 @@ public:
     /** Tells whether an opened file has been associated to the
      * instance.
      */
-    explicit operator bool() { return bool(m_file); }
+    [[nodiscard]]
+    explicit operator bool()
+    {
+        return bool(m_file);
+    }
 
     /** Getter to the associated file. */
-    std::ostream& stream() { return m_file; }
+    [[nodiscard]]
+    std::ostream& stream()
+    {
+        return m_file;
+    }
 
     /**
      * Appends {{mustache}} template in the file to render the select
@@ -189,6 +291,7 @@ private:
      * possible tags
      * https://nanobench.ankerl.com/reference.html#_CPPv4N6ankerl9nanobench6renderEPKcRK5BenchRNSt7ostreamE
      */
+    [[nodiscard]]
     std::string skeleton(std::string const& id = "mydiv", std::string const& plot_type = "") const
     {
         std::string const& type = !empty(plot_type) ? plot_type : m_plot_type;
@@ -200,7 +303,7 @@ private:
             "    <script>\n"
             "        var data = [\n"
             "            {{#result}}{\n"
-            "                name: '{{name}} (error: ' + (100*{{medianAbsolutePercentError(elapsed)}}).toFixed(2) + '%)',\n"
+            "                name: '{{name}} (error: ' + (100*{{medianAbsolutePercentError(elapsed)}}).toFixed(2) + '%" + m_show_epochs + ")',\n"
             "                y: [{{#measurement}}{{elapsed}}{{^-last}}, {{/last}}{{/measurement}}],\n"
             "            },\n"
             "            {{/result}}\n"
@@ -208,7 +311,7 @@ private:
             "        var title = '{{title}}';\n"
             "\n"
             "        data = data.map(a => Object.assign(a, { boxpoints: 'all', pointpos: 0, type: '" + type + "', box: {visible: true}, meanline: {visible: true} }));\n"
-            "        var layout = { title: { text: title }, showlegend: "+m_showlegend+", yaxis: { title: 'time per unit', rangemode: 'tozero', autorange: true } };\n"
+            "        var layout = { title: { text: title }, showlegend: "+m_show_legend+", yaxis: { title: 'time per unit'" + m_range_mode + ", autorange: true } };\n"
             "        Plotly.newPlot('" + id + "', data, layout, {responsive: true});\n"
             "    </script>\n"
             ;
@@ -216,7 +319,9 @@ private:
     }
 
     std::string   m_plot_type;
-    std::string   m_showlegend;
+    std::string   m_show_legend = "false";
+    std::string   m_show_epochs = "";
+    std::string   m_range_mode  =  ", rangemode: 'tozero'";
     std::string   m_filename;
     std::ofstream m_file;
 };

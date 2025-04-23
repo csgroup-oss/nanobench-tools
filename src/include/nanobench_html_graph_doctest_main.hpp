@@ -58,11 +58,31 @@ void render_graph(ankerl::nanobench::Bench const& b, Strings const&... s)
     }
 }
 
+#ifndef NANOBENCH_VIOLIN_OPTIONS
+/**
+ * Initialization options for the `HtmlGraphRenderer` instance.
+ * The options are meant to be passed as a series of calls to
+ * `HtmlGraphRenderer` _à la_ _builder pattern_.
+ *
+ * For instance:
+ *
+ * ```c++
+ * #define NANOBENCH_VIOLIN_OPTIONS \
+ *      .showepochs(true) \
+ *      .rangemode("tozero")
+ * ```
+ */
+#define NANOBENCH_VIOLIN_OPTIONS
+#endif
+
 DOCTEST_MSVC_SUPPRESS_WARNING_WITH_PUSH(4007) // 'function' : must be 'attribute' - see issue #182
 int main(int argc, char** argv)
 {
     auto ctx = doctest::Context();
-    HtmlGraphRenderer l_output("violin", /*legend=*/true);
+    auto l_output = HtmlGraphRenderer("violin")
+        .showlegend(true)
+        NANOBENCH_VIOLIN_OPTIONS
+        ;
 
     ctx.applyCommandLine(argc, argv);
     doctest::String output_filename;
