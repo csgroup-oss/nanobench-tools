@@ -62,6 +62,13 @@ Doctest executables will now have a `--renderto=<file.html>` option that enables
 From the test case, just call `render_graph(thebenchmark, "benchmark title")`. For instance:
 
 ```c++
+// As with doctest and nanobench, this macro needs to be set before
+// the #include  "nanobench_html_graph_doctest_main.hpp" if you want
+// to tune rendering options.
+#define NANOBENCH_VIOLIN_OPTIONS \
+    .showepochs(true) \
+    .rangemode("")
+
 #include "nanobench_html_graph_doctest_main.hpp"
 
 TEST_CASE("mult/div float L1") {

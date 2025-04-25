@@ -71,6 +71,8 @@ void render_graph(ankerl::nanobench::Bench const& b, Strings const&... s)
  *      .showepochs(true) \
  *      .rangemode("tozero")
  * ```
+ *
+ * This macro is meant to be overriden before including this header file.
  */
 #define NANOBENCH_VIOLIN_OPTIONS
 #endif
