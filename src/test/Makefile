@@ -1,8 +1,9 @@
 # Helpers for producing multiple comparison graphs with nanobench+doctest
 # ======================================================================
+# Copyright (c) 2025 CS GROUP
+#
 # Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2025 CS GROUP
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

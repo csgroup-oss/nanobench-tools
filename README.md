@@ -103,9 +103,9 @@ systems.
 
 ## Licence
 
-This toolbox is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
 Copyright © 2025 CS GROUP
+
+This toolbox is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## To-do
 
