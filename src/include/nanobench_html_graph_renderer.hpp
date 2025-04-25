@@ -2,7 +2,7 @@
 // ======================================================================
 // Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2025 CSGroup-FRANCE/SopraSteriaGroup, Luc Hermitte
+// Copyright (c) 2025 CS GROUP
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +22,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
+// ======================================================================
+//
+// Authors:
+// - Luc Hermitte, initial author
+//
+// ======================================================================
+//
 // Defines:
 // - HtmlGraphRenderer meant to be used in nanobench::Bench::render()
 //   It will trace several benchmarks instead of only 1 as it's done by
 //   ankerl::nanobench::templates::htmlBoxplot()
 //   Also an option permits to choose violin graphs instead of box
 //   graphs
-//
-// - A main() function that replaces what
-//   DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN would have generated to enable a
-//   new parameter: "--renderto=webpage.html"
-// - Defines  global pointer variable: graph_renderer to be used if not
-//   null.
+
 #ifndef nanobench_html_graph_renderer
 #define nanobench_html_graph_renderer
 
